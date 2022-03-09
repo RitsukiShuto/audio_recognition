@@ -1,28 +1,48 @@
 # Created by RitsukiShuto on 2022/03/01.
 # data argmentation
 #
-import pandas as pd
+from lib2to3.pytree import convert
+from audiomentations import Compose, AddGaussianNoise, Shift
+import librosa as lr
+
+import os
+import random
 import glob
-import librosa
+
+import pandas as pd
+import numpy as np
+
+def convert_MFCC(file_name, i):
+    # convert to MFCC
+    print('Converting to' + file_name)
+    mfcc = librosa.feature.mfcc(y = y, sr = sr, n_mfcc = 20)
+    ceps = mfcc.mean(axis = 1)
+
+    list_MFCC.append(ceps)
+    list_label.append(i)
+
+def WhiteNoise(file_name, sr):
+    lr.audio.sf.write(file_name, file_name, sr)
+    convert_MFCC(file_name, i)
+
+def seed_set(seed=42):
+    random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    np.random.seed(seed)
+
 
 # 0:dog, 1:rooster, 2:pig, 3:cow
 list_MFCC = []
 list_label = []
 
+seed_set()
+
 for i in range (0, 4):
     file_list = glob.glob('./ESC-50/audio/*' + '-' + str(i) + '.wav')
-
-    # convert to MFCC
     for file_name in file_list:
-        # nomal
-        y, sr = librosa.core.load(file_name, sr = None)
-        mfcc = librosa.feature.mfcc(y = y, sr = sr, n_mfcc = 20)
-
-        ceps = mfcc.mean(axis = 1)
-
-        list_MFCC.append(ceps)
-        list_label.append(i)
-
+        y, sr = lr.core.load(file_name, sr = None)
+        convert_MFCC(file_name, i)  # Nomal
+        # WhiteNoise(file_name, i)           # WhiteNoise
 
 
 # データフレーム化
