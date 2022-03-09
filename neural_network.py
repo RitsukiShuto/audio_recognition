@@ -36,7 +36,7 @@ y_test = np_utils.to_categorical(y_test, 4)
 model = Sequential()
 model.add(InputLayer(input_shape=(20,)))   # 入力層
 model.add(Dense(16, activation='softmax')) # 中間層
-model.add(Dense(10, activation='softmax'))
+model.add(Dense(8, activation='softmax'))
 model.add(Dense(4, activation='softmax'))  # 出力層
 model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
